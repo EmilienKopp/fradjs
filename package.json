@@ -1,0 +1,24 @@
+{
+  "name": "romulus.js",
+  "version": "1.0.3",
+  "description": "A NodeJS CLI tool to quickly define build steps for your project",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "emilienkopp",
+  "license": "ISC",
+  "type": "module",
+  "keywords": [
+    "cli",
+    "nodejs",
+    "build",
+    "automation",
+    "tool"
+  ],
+  "dependencies": {
+    "chalk": "^5.3.0",
+    "inquirer": "^10.1.8",
+    "ora": "^8.0.1"
+  }
+}
