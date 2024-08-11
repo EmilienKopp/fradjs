@@ -65,11 +65,11 @@ export async function command(command, description) {
 
     proc.on('close', (code) => {
       if (code === 0) {
-        console.log(chalk.bgGreen(`\n ==> ${description ?? "Process"} completed successfully. ✔  \n`));
+        console.log(chalk.green(`\n ==> ${description ?? "'"+command+"'"} completed successfully. ✔  \n`));
         resolve();
       } else {
-        console.error(`\n ==> ${description ?? "Process"} failed with exit code ${code}. ✘  \n`);
-        reject(new Error(chalk.bgRed(`Command failed with exit code ${code}`)));
+        console.error(`\n ==> ${description ?? "'"+command+"'"} failed with exit code ${code}. ✘  \n`);
+        reject(new Error(chalk.red(`Command failed with exit code ${code}`)));
       }
     });
   });
@@ -127,9 +127,9 @@ export class BuildSmith {
       if (result instanceof Promise) {
         await result;
       }
-      spinner.succeed(`${chalk.green(options.succeed || `Step "${name}" completed successfully`)}`);
+      spinner.succeed(`${chalk.bgGreen(options.succeed || `Step "${name}" completed successfully`)}`);
     } catch (error) {
-      spinner.fail(`${chalk.red(options.fail || `Step "${name}" failed`)}`);
+      spinner.fail(`${chalk.bgRed(options.fail || `Step "${name}" failed`)}`);
       console.error(error);
       if (options.exitOnError) {
         process.exit(1);
