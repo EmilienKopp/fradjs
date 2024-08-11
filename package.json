@@ -1,6 +1,6 @@
 {
   "name": "romulus.js",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "A NodeJS CLI tool to quickly define build steps for your project",
   "main": "index.js",
   "scripts": {
@@ -8,7 +8,6 @@
     "publish:patch": "npm version patch && npm publish",
     "publish:minor": "npm version minor && npm publish",
     "publish:major": "npm version major && npm publish"
-    
   },
   "author": "emilienkopp",
   "license": "ISC",
