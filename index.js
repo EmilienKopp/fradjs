@@ -68,7 +68,7 @@ export async function command(command, description) {
         console.log(chalk.green(`\n ==> ${description ?? "'"+command+"'"} completed successfully. ✔  \n`));
         resolve();
       } else {
-        console.error(`\n ==> ${description ?? "'"+command+"'"} failed with exit code ${code}. ✘  \n`);
+        console.error(chalk.red(`\n ==> ${description ?? "Command '"+command+"'"} failed with exit code ${code}. ✘  \n`) );
         reject(new Error(chalk.red(`Command failed with exit code ${code}`)));
       }
     });
@@ -87,8 +87,10 @@ export class BuildSmith {
     return `${now.getFullYear()}${String(now.getMonth() + 1).padStart(2, '0')}${String(now.getDate()).padStart(2, '0')}${String(now.getHours()).padStart(2, '0')}${String(now.getMinutes()).padStart(2, '0')}`;
   }
 
-  addBuildStep({name, key, callback, options = {}}) {
-    this.steps.push({ name, key, callback, options });
+  addBuildStep({name, key, callback, checked, options = {}}) {
+    this.steps.push({ name, key, callback, checked, options });
+    console.log("Added step: ", name);
+    console.log(this.steps);
   }
 
   async run() {
