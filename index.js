@@ -3,6 +3,7 @@ import { execSync, spawn } from 'child_process';
 import chalk from 'chalk';
 import fs from 'fs';
 import inquirer from 'inquirer';
+import { log } from './utils';
 import ora from 'ora';
 
 /**
@@ -141,8 +142,6 @@ export class BuildSmith {
     return inquirer.prompt(questions);
   }
 
-  
-
   /**
    * 
    * @param {string} command The command to execute
@@ -158,17 +157,6 @@ export class BuildSmith {
     }
   }
 
-
-  /**
-   * 
-   * @param {string} message The message to log
-   * @param {LogEnum} type The type of log message (info, success, warning, error)
-   */
-  log(message, type = 'info') {
-    const color = chalk[logColors[type]];
-    console.log(color(message));
-  }
-
   readPackageJson() {
     return JSON.parse(fs.readFileSync('./package.json', 'utf8'));
   }
@@ -176,4 +164,9 @@ export class BuildSmith {
   writePackageJson(data) {
     fs.writeFileSync('./package.json', JSON.stringify(data, null, 2));
   }
+}
+
+
+export {
+  log
 }
