@@ -6,7 +6,7 @@ import inquirer from 'inquirer';
 import ora from 'ora';
 
 export { log } from './utils.js';
-export { default as Cmd } from './commands.js';
+export { default as Cmd }from './commands.js';
 
 /**
  * @typedef {Object} StepOptions

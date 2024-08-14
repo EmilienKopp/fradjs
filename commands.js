@@ -80,7 +80,22 @@ class Cmd {
    * @param {string} destination - The destination file path.
    */
   static cp(source, destination) {
-    fs.copyFileSync(source, destination);
+    if(!fs.existsSync(source)) {
+      throw new Error(`Source file or directory does not exist: ${source}`);
+    }
+    if(fs.existsSync(destination)) {
+      throw new Error(`Destination file or directory already exists: ${destination}`);
+    }
+    if (fs.lstatSync(source).isDirectory()) {
+      if(!fs.existsSync(destination)) {
+        fs.mkdirSync(destination, { recursive: true });
+      }
+      fs.readdirSync(source).forEach(file => {
+        this.cp(join(source, file), join(destination, file));
+      });
+    } else{
+      fs.copyFileSync(source, destination);
+    }
   }
 
   /**
