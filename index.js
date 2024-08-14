@@ -3,8 +3,10 @@ import { execSync, spawn } from 'child_process';
 import chalk from 'chalk';
 import fs from 'fs';
 import inquirer from 'inquirer';
-import { log } from './utils';
 import ora from 'ora';
+
+export { log } from './utils.js';
+export { default as Cmd } from './commands.js';
 
 /**
  * @typedef {Object} StepOptions
@@ -19,62 +21,6 @@ import ora from 'ora';
  * @returns {any} - The result of the callback.
  */
 
-/**
- * @typedef {'info' | 'success' | 'warning' | 'error'} LogType
- */
-
-/**
- * @typedef {Object} LogEnum
- * @property {string} info - The color for info messages.
- * @property {string} success - The color for success messages.
- * @property {string} warning - The color for warning messages.
- * @property {string} error - The color for error messages.
- */
-
-/**
- * @type {LogEnum}
- */
-const logColors = {
-  info: 'blue',
-  success: 'green',
-  warning: 'yellow',
-  error: 'red'
-};
-
-/**
-   * 
-   * @param {string} command The command to execute
-   * @param {string} description A brief description of the command
-   * @returns a Promise that resolves when the command completes successfully
-   */
-export async function command(command, description) {
-  return new Promise((resolve, reject) => {
-    if (description) {
-      console.log(`\n${description}:`);
-    }
-    
-    const [cmd, ...args] = command.split(' ');
-    const proc = spawn(cmd, args, { shell: true });
-
-    proc.stdout.on('data', (data) => {
-      process.stdout.write(data.toString());
-    });
-
-    proc.stderr.on('data', (data) => {
-      process.stderr.write(data.toString());
-    });
-
-    proc.on('close', (code) => {
-      if (code === 0) {
-        console.log(chalk.bgGreen(`\n ==> ${description ?? "Process"} completed successfully. ✔  \n`));
-        resolve();
-      } else {
-        console.error(`\n ==> ${description ?? "Process"} failed with exit code ${code}. ✘  \n`);
-        reject(new Error(chalk.bgRed(`Command failed with exit code ${code}`)));
-      }
-    });
-  });
-}
 
 export class BuildSmith {
   constructor(config = {}) {
@@ -157,6 +103,10 @@ export class BuildSmith {
     }
   }
 
+  get projectRoot() {
+    return process.cwd();
+  }
+
   readPackageJson() {
     return JSON.parse(fs.readFileSync('./package.json', 'utf8'));
   }
@@ -164,9 +114,4 @@ export class BuildSmith {
   writePackageJson(data) {
     fs.writeFileSync('./package.json', JSON.stringify(data, null, 2));
   }
-}
-
-
-export {
-  log
 }
