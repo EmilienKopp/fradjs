@@ -30,8 +30,9 @@ class Cmd {
    */
   static async execute(command, description) {
     return new Promise((resolve, reject) => {
-      if (description) {
-        console.log(`\n${description}:`);
+      const message = description ? `Executing: ${description}` : `Executing: ${command}`;
+      if (message) {
+        console.log(`\n${message}:`);
       }
 
       const [cmd, ...args] = command.split(' ');

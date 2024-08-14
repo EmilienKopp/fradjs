@@ -34,8 +34,8 @@ export class BuildSmith {
     return `${now.getFullYear()}${String(now.getMonth() + 1).padStart(2, '0')}${String(now.getDate()).padStart(2, '0')}${String(now.getHours()).padStart(2, '0')}${String(now.getMinutes()).padStart(2, '0')}`;
   }
 
-  addBuildStep({name, key, callback, options = {}}) {
-    this.steps.push({ name, key, callback, options });
+  addBuildStep({name, key, callback, checked = false, options = {}}) {
+    this.steps.push({ name, key, callback, checked, options });
   }
 
   async run() {
