@@ -26,7 +26,7 @@ class Cmd {
    * Executes a shell command asynchronously.
    * @param {string} command - The command to execute.
    * @param {string} description - A brief description of the command.
-   * @returns {Promise<void>} - Resolves when the command completes successfully.
+   * @returns {Promise<any>} - Resolves when the command completes successfully.
    */
   static async execute(command, description) {
     return new Promise((resolve, reject) => {
@@ -48,14 +48,25 @@ class Cmd {
 
       proc.on('close', (code) => {
         if (code === 0) {
-          console.log(chalk.bgGreen(`\n ==> ${description ?? "Process"} completed successfully. ✔  \n`));
+          console.log(chalk.green(`\n ==> ${description ?? "Process"} completed successfully. ✔  \n`));
           resolve();
         } else {
           console.error(`\n ==> ${description ?? "Process"} failed with exit code ${code}. ✘  \n`);
-          reject(new Error(chalk.bgRed(`Command failed with exit code ${code}`)));
+          reject(new Error(chalk.red(`Command failed with exit code ${code}`)));
         }
       });
     });
+  }
+
+  // Execute a command but store its output in a return variable
+  static output(command) {
+    try {
+      return execSync(command, { encoding: 'utf8' });
+    } catch (error) {
+      console.error(`Error executing command: ${command}`);
+      console.error(error.message);
+      return null;
+    }
   }
 
   /**
