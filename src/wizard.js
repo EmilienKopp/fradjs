@@ -32,7 +32,7 @@ export { default as Cmd } from './commands.js';
  * @property {Step[]} steps - The list of build steps.
  * @property {string} timestamp - The timestamp for the build wizard.
  */
-export class BuildSmith {
+export class Wizard {
   /**
    * @param {Object} config - The configuration object for the build wizard.
    */
