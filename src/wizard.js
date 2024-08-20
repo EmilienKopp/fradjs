@@ -100,7 +100,7 @@ export class Wizard {
       for (const key of selectedSteps) {
         const step = this.steps.find(step => step.key === key);
         if (step && step.callback) {
-          // await this.runStep(step.name, step.callback, step.options);
+          await this.runStep(step.name, step.callback, step.options);
         }
       }
     } else {
