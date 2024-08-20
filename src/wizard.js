@@ -3,9 +3,11 @@
 import { execSync, spawn } from 'child_process';
 import ora, { oraPromise } from 'ora';
 
+import { ConfigManager } from './lib/configManager.js';
 import chalk from 'chalk';
 import fs from 'fs';
 import inquirer from 'inquirer';
+import { log } from './utils.js';
 
 export { log } from './utils.js';
 export { default as Cmd } from './commands.js';
@@ -36,10 +38,11 @@ export class Wizard {
   /**
    * @param {Object} config - The configuration object for the build wizard.
    */
-  constructor(config = {}) {
+  constructor(config = ConfigManager.readConfig()) {
     this.config = config;
     this.steps = [];
     this.timestamp = this.generateTimestamp();
+    console.log(config);
   }
 
   generateTimestamp() {
@@ -63,7 +66,18 @@ export class Wizard {
   }
 
   async run() {
-    const choices = this.steps.map((step, index) => ({ name: step.name, value: step.key ?? index, checked: step.checked ?? false }));
+    let previousSelection = {};
+    const scriptFilename = this.getScriptFilename() ?? "default";
+    if(this.config.savePreviousSelection && ConfigManager.previousSelection) {
+      previousSelection = ConfigManager.previousSelection;
+    }
+
+    const choices = this.steps.map((step, index) => ({ 
+      name: step.name, 
+      value: step.key ?? index, 
+      checked: previousSelection?.[scriptFilename]?.[step.key] ?? step.checked ??  false 
+    }));
+
     const {selectedSteps} = await this.prompt([
       {
         type: 'checkbox',
@@ -72,16 +86,27 @@ export class Wizard {
         choices
       }
     ]);
+
+    if(this.config.savePreviousSelection) {
+      const selection = previousSelection;
+      selection[scriptFilename] = Object.values(choices).reduce((acc, choice) => {
+        acc[choice.value] = selectedSteps.includes(choice.value);
+        return acc;
+      }, {});
+      ConfigManager.saveSelection(selection);
+    }
+    
     if(selectedSteps.length > 0) {
       for (const key of selectedSteps) {
         const step = this.steps.find(step => step.key === key);
         if (step && step.callback) {
-          await this.runStep(step.name, step.callback, step.options);
+          // await this.runStep(step.name, step.callback, step.options);
         }
       }
     } else {
-      this.log('Well then, I won\'t do anything ... 😢', 'warning');
+      log('Well then, I won\'t do anything ... 😢', 'warning');
     }
+
     console.log("Goodbye 👋");
   }
 
@@ -140,5 +165,14 @@ export class Wizard {
 
   writePackageJson(data) {
     fs.writeFileSync('./package.json', JSON.stringify(data, null, 2));
+  }
+
+  /**
+   * Returns the filename of the currently executed script
+   * @returns {string | undefined} The filename of the currently executed script
+   */
+  getScriptFilename() {
+    const platformAgnosticPath = process.argv[1].replace(/\\/g, '/');
+    return platformAgnosticPath.split('/').pop();
   }
 }
