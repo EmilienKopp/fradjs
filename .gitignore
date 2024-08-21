@@ -5,3 +5,10 @@ node_modules
 *.test.js
 
 frad.conf.json
+
+dist/
+
+.env
+
+.env.*
+!*.env.example
