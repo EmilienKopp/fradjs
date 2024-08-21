@@ -1,0 +1,7 @@
+build
+dist
+coverage
+.*.js
+**/*.json
+*.config.ts
+*.config.js
